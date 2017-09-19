@@ -35,14 +35,14 @@ def user_list():
     return render_template("user_list.html", users=users)
 
 
-@app.route("/registration_form")
-def registraion_form():
+@app.route("/registration", methods=["GET"])
+def registration_form():
     return render_template("registration_form.html")
 
 
 @app.route("/registration", methods=["POST"])
 def registration():
-    """handles registraion form"""
+    """handles registration form"""
 
     email = request.form.get("email")
     password = request.form.get("password")
@@ -61,6 +61,34 @@ def registration():
     return redirect("/")
 
 
+@app.route("/check_login.json", methods=["POST"])
+def check_login():
+    email = request.form.get("email")
+    password = request.form.get("password")
+
+    user = User.query.filter(User.email == email).all()
+    if user:
+
+        if user[0].password == password:
+            return jsonify({"success": "all good"})
+        else:
+            return jsonify({"success": "wrong password"})
+    else:
+        return jsonify({"success": "not registered"})
+
+
+@app.route("/login", methods=["POST"])
+def login():
+    session["user_email"] = request.form.get("email")
+    flash("Logged in as "+session["user_email"])
+    return redirect("/")
+
+
+
+@app.route("/login", methods=["GET"])
+def login_page():
+
+    return render_template("login.html")
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the

@@ -3,9 +3,10 @@
 
 <h1>Registration</h1>
 
-<form action="/registration" method="POST">
-    Email<input type="text" name="email">  </input> <br>
-    Password<input type="text" name="password">  </input><br>
+<form action="/registration" method="POST" id="reg-form">
+    Email  <input type="text" name="email">  </input> <br>
+    Password  <input type="password" name="password" id="password">  </input><br>
+    Confirm Password<input type="password" name="confirm_password" id="confirm-password"> </input><br>
     Age<input type="number" name="age"></input><br>
     Gender<select name="gender">
         <option value="M">M</option>
@@ -16,4 +17,17 @@
 
 </form>
 
+<script>
+var confirm = document.getElementById("confirm-password");
+var password = document.getElementById("password");
+function passwordMisMatch(evt){
+
+    if (password.getAttribute("value") !== confirm.getAttribute("value")){
+        evt.preventDefault();
+        alert("You've entered different values for your password fields.");
+    }
+}
+var formElement = document.getElementById("reg-form");
+formElement.addEventListener("submit",passwordMisMatch);
+</script>
 {% endblock %}
