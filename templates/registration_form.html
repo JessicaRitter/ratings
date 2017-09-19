@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>Registration</h1>
+
+<form action="/registration" method="POST">
+    Email<input type="text" name="email">  </input> <br>
+    Password<input type="text" name="password">  </input><br>
+    Age<input type="number" name="age"></input><br>
+    Gender<select name="gender">
+        <option value="M">M</option>
+        <option value="F">F</option>
+        <option value="O">Other</option>
+    </select><br>
+    <input type="submit">
+
+</form>
+
+{% endblock %}
