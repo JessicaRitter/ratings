@@ -6,7 +6,8 @@
 </head>
 
 <body>
-  Ratings
+  Ratings {%if 'user_email' in session%} <a href="/logout"> Log out </a>
+  {%else%} <a href="/login"> Log In </a> {%endif%}
   <hr>
 
   {% block content %} put your content here {% endblock %}

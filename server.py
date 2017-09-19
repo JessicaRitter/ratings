@@ -90,6 +90,13 @@ def login_page():
 
     return render_template("login.html")
 
+
+@app.route("/logout")
+def logout():
+    del session["user_email"]
+    flash("Logout successful")
+    return redirect("/")
+
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the
     # point that we invoke the DebugToolbarExtension
