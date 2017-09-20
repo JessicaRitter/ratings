@@ -68,7 +68,7 @@ def registration():
         db.session.add(user)
         db.session.commit()
         flash("You have been registered. Thank you.")
-    return redirect("/")
+    return redirect("/login")
 
 
 @app.route("/check_login.json", methods=["POST"])
@@ -142,15 +142,19 @@ def show_movie(movie_id):
     return render_template("movie-profile.html", title=movie[0].title, movie_id=movie[0].movie_id,
                            year=year, imdb_url=movie[0].imdb_url, rating_user_id=rating_user_id)
 
+
 @app.route("/add-rating", methods=["POST"])
 def add_rating():
     movie_id = request.form.get("movie")
-    rating = request.form.get("score")
+    rating_score = request.form.get("score")
 
     user_id = session["user_id"]
-
-    rating = Rating(movie_id=movie_id, score=rating, user_id=user_id)
-    db.session.add(rating)
+    rating = Rating.query.filter(Rating.user_id == user_id, Rating.movie_id == movie_id).all()
+    if rating:
+       rating[0].score = rating_score
+    else:
+        rating = Rating(movie_id=movie_id, score=rating_score, user_id=user_id)
+        db.session.add(rating)
     db.session.commit()
 
     flash("Your rating has been added!")
