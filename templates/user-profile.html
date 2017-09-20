@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>{{ email }} Profile</h1>
+
+{% for message in get_flashed_messages() %}
+<h1 class="flashed-messages"> {{message}} <h1>
+{% endfor %}
+<h2>User Info</h2>
+<ul>
+<li>{{ email }}</li>
+<li>{{ age }}</li>
+<li>{{ zipcode }}</li>
+<li>{{ gender }}</li>
+</ul>
+
+<h2>Ratings</h2>
+<ul>
+{% for score, title, movie_id in rating_titles %}
+<li>Score: {{ score }}, Title:<a href="/movies/{{movie_id}}"> {{ title }}</a></li>
+{% endfor %}
+</ul>
+
+
+{% endblock %}

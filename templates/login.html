@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>Login</h1>
+
+<form action="/login" method="POST" id="login-form">
+    Email  <input type="text" name="email" id="email">  </input> <br>
+    Password  <input type="password" name="password" id="password">  </input><br>
+    <input type="submit">
+
+</form>
+
+<script>
+$("#login-form").on("submit", function (evt){
+
+        evt.preventDefault();
+        $.post("/check_login.json", {email:$("#email").val(), password:$("#password").val()}, function (result){
+            if (result["success"] === "wrong password"){
+                alert("Incorrect password");
+            } else if (result["success"] === "not registered"){
+                alert("You are not registered, please sign up");
+            } else {
+                $("#login-form").off("submit");
+                $("#login-form").submit();
+
+            }
+
+    });
+});
+</script>
+{% endblock %}

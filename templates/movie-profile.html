@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>{{ title }} Details</h1>
+
+{% for message in get_flashed_messages() %}
+<h1 class="flashed-messages"> {{message}} <h1>
+{% endfor %}
+<h2>Movie Info</h2>
+<ul>
+<li>{{ title }}</li>
+<li>{{ year }}</li>
+<li><a href="{{ imdb_url }}">IMDB link</a></li>
+</ul>
+<h1>Rate {{ title }}</h1>
+<form action="/add-rating" method="POST">
+    <input type="hidden" value="5" name="score">
+    <input type="hidden" name="movie" value="{{ movie_id }}">
+    <input type="submit" value="5">
+</form>
+<form action="/add-rating" method="POST">
+ <input type="hidden" value="4" name="score">
+ <input type="hidden" name="movie" value="{{ movie_id }}">
+  <input type="submit" value="4">
+</form>
+<form action="/add-rating" method="POST">
+    <input type="hidden" value="3" name="score">
+    <input type="hidden" name="movie" value="{{ movie_id }}">
+     <input type="submit" value="3">
+</form>
+<form action="/add-rating" method="POST">
+    <input type="hidden" value="2" name="score">
+    <input type="hidden" name="movie" value="{{ movie_id }}">
+     <input type="submit" value="2">
+</form>
+<form action="/add-rating" method="POST">
+    <input type="hidden" value="1" name="score">
+    <input type="hidden" name="movie" value="{{ movie_id }}">
+     <input type="submit" value="1">
+</form>
+
+
+<h2>Ratings</h2>
+<ul>
+{% for score, user_id in rating_user_id %}
+<li>Score: {{ score }}, User: <a href="/users/{{ user_id }}"> {{user_id}}</a></li>
+{% endfor %}
+</ul>
+
+
+{% endblock %}
