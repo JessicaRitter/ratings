@@ -1,6 +1,8 @@
 """Models and database functions for Ratings project."""
 
 from flask_sqlalchemy import SQLAlchemy
+from correlation import pearson, euclidean_similarity
+import random
 
 # This is the connection to the PostgreSQL database; we're getting this through
 # the Flask-SQLAlchemy helper library. On this, we can find the `session`
@@ -23,6 +25,10 @@ class User(db.Model):
     age = db.Column(db.Integer, nullable=True)
     zipcode = db.Column(db.String(15), nullable=True)
     gender = db.Column(db.String(24), nullable=True)
+
+
+    def predict_rating(self, movie):
+        return predict_rating(self.user_id,movie, euclidean_similarity)
 
 
     def __repr__(self):
@@ -75,6 +81,44 @@ def connect_to_db(app):
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.app = app
     db.init_app(app)
+
+
+def predict_rating(user_id, movie_id, procedure):
+
+    pred_user = Rating.query.filter(Rating.user_id == user_id).all()
+
+    pred_movie_score = {pred_rating.movie_id: pred_rating.score for pred_rating in pred_user}
+
+    users = Rating.query.filter(Rating.movie_id == movie_id, Rating.user_id != user_id).all()
+    procedure_list=[]
+
+    for user in users:
+        rating_list = Rating.query.filter(Rating.user_id == user.user_id).all()
+        movie_score = {rating.movie_id: rating.score for rating in rating_list}
+        intersection = list(set(movie_score.keys()) & set(pred_movie_score.keys()))
+
+        if intersection:
+            pairs = []
+            for movie_id in intersection:
+                pairs.append((pred_movie_score[movie_id],
+                    movie_score[movie_id]))
+            # print pairs
+            # print procedure(pairs)
+            procedure_list.append((procedure(pairs), movie_score[user.movie_id]))
+
+
+    numerator = sum([(rating * coefficient) for coefficient, rating in procedure_list if coefficient > 0])
+    denominator = sum([coefficient for coefficient, rating in procedure_list if coefficient > 0])
+    # print numerator, denominator
+    mean = numerator/denominator
+
+    if mean > 5:
+        mean = 5
+    elif mean < 1:
+        mean = 1
+    return mean
+
+
 
 
 if __name__ == "__main__":

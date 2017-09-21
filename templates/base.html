@@ -8,6 +8,10 @@
 <body>
   Ratings {%if 'user_email' in session%} <a href="/logout"> Log out </a>
   {%else%} <a href="/login"> Log In </a> {%endif%}
+  <a href="/registration"> Sign Up </a> <br>
+  <a href="/movies"> Movies </a>
+  <a href="/users"> Users </a> <br>
+
   <hr>
 
   {% block content %} put your content here {% endblock %}

@@ -6,7 +6,8 @@ from flask import Flask, jsonify, render_template, redirect, request, flash, ses
 from flask_debugtoolbar import DebugToolbarExtension
 
 from model import connect_to_db, db, User, Movie, Rating
-
+import correlation
+import random
 
 app = Flask(__name__)
 
@@ -160,6 +161,19 @@ def add_rating():
     flash("Your rating has been added!")
 
     return redirect("/movies/%s" % movie_id)
+
+@app.route("/test")
+def test_pearson():
+    random_users = random.sample(Rating.query.filter(Rating.movie_id == 346).all(),25)
+    with open("test.txt","w") as f:
+        for random_user in random_users:
+            predrating = User.query.filter(User.user_id ==random_user.user_id).one().predict_rating(346)
+            print "predicted score for user " , predrating
+            print "actual score for user", random_user.score
+            print "user_id", random_user.user_id
+            f.write(str(predrating)+"|"+str(random_user.score)+"|"+str(random_user.user_id)+"\n")
+
+    return "Done"
 
 
 if __name__ == "__main__":
