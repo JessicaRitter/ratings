@@ -1,0 +1,25 @@
+h1 {
+    font-family: 'Nunito', sans-serif;
+    color:#AA4465;
+}
+
+body {
+    background-color: #DDFFF7;
+}
+
+p {
+    color:#93E1D8;
+}
+
+.evil h1 {
+    color:#336699;
+}
+
+form .submit {
+    display:inline;
+}
+
+.submit {
+    height:20px;
+    width:40px;
+}

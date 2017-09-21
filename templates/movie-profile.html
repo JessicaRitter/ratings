@@ -13,30 +13,36 @@
 <li><a href="{{ imdb_url }}">IMDB link</a></li>
 </ul>
 <h1>Rate {{ title }}</h1>
+<br>
+{%if predrating > 0%}
+<h1> We predict you will rate this movie {{predrating}} </h1>
+<h1 class="evil">The evil eye says: {{beratement}}</h1>
+{%endif%}
+<br>
 <form action="/add-rating" method="POST">
     <input type="hidden" value="5" name="score">
     <input type="hidden" name="movie" value="{{ movie_id }}">
-    <input type="submit" value="5">
+    <input type="submit" value="5" class="submit">
 </form>
 <form action="/add-rating" method="POST">
  <input type="hidden" value="4" name="score">
  <input type="hidden" name="movie" value="{{ movie_id }}">
-  <input type="submit" value="4">
+  <input type="submit" value="4"class="submit">
 </form>
 <form action="/add-rating" method="POST">
     <input type="hidden" value="3" name="score">
     <input type="hidden" name="movie" value="{{ movie_id }}">
-     <input type="submit" value="3">
+     <input type="submit" value="3"class="submit">
 </form>
 <form action="/add-rating" method="POST">
     <input type="hidden" value="2" name="score">
     <input type="hidden" name="movie" value="{{ movie_id }}">
-     <input type="submit" value="2">
+     <input type="submit" value="2"class="submit">
 </form>
 <form action="/add-rating" method="POST">
     <input type="hidden" value="1" name="score">
     <input type="hidden" name="movie" value="{{ movie_id }}">
-     <input type="submit" value="1">
+     <input type="submit" value="1"class="submit">
 </form>
 
 

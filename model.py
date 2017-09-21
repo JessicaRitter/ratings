@@ -28,7 +28,7 @@ class User(db.Model):
 
 
     def predict_rating(self, movie):
-        return predict_rating(self.user_id,movie, euclidean_similarity)
+        return predict_rating(self.user_id,movie, pearson)
 
 
     def __repr__(self):
@@ -106,9 +106,9 @@ def predict_rating(user_id, movie_id, procedure):
             # print procedure(pairs)
             procedure_list.append((procedure(pairs), movie_score[user.movie_id]))
 
-
-    numerator = sum([(rating * coefficient) for coefficient, rating in procedure_list if coefficient > 0])
-    denominator = sum([coefficient for coefficient, rating in procedure_list if coefficient > 0])
+    procedure_list_trunc = sorted(procedure_list, reverse=True)[0:5]
+    numerator = sum([(rating * coefficient) for coefficient, rating in procedure_list_trunc if coefficient > 0])
+    denominator = sum([coefficient for coefficient, rating in procedure_list_trunc if coefficient > 0])
     # print numerator, denominator
     mean = numerator/denominator
 

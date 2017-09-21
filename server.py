@@ -122,10 +122,9 @@ def show_profile(user_id):
     for rating in ratings:
         rating_titles.append((rating.score, rating.movie.title, rating.movie_id))
 
-
-
     return render_template("user-profile.html", email=user[0].email, age=user[0].age,
                             gender=user[0].gender,zipcode=user[0].zipcode, rating_titles=rating_titles)
+
 
 @app.route("/movies/<movie_id>")
 def show_movie(movie_id):
@@ -140,8 +139,56 @@ def show_movie(movie_id):
     year = movie[0].released_at.year
 
 
+    if (session.get("user_id", None) and
+        len(Rating.query.filter(Rating.user_id == session["user_id"]).all()) > 5
+        and not Rating.query.filter(Rating.user_id == session["user_id"], Rating.movie_id == movie_id).all()):
+        predrating = round(User.query.filter(User.user_id == session["user_id"]).one().predict_rating(movie_id))
+    elif not (session.get("user_id", None) or
+        len(Rating.query.filter(Rating.user_id == session["user_id"]).all()) > 5):
+        predrating = -1
+    else:
+        predrating = Rating.query.filter(Rating.user_id == session["user_id"], Rating.movie_id == movie_id).all()[0].score
+
+
+
+    the_eye = (User.query.filter_by(email="the-eye@of-judgment.com")
+                         .one())
+    eye_rating = Rating.query.filter_by(
+        user_id=the_eye.user_id, movie_id=movie_id).first()
+
+
+    if eye_rating is None:
+        eye_rating = the_eye.predict_rating(movie_id)
+
+    else:
+        eye_rating = eye_rating.score
+
+    if eye_rating and predrating:
+        difference = abs(eye_rating - predrating)
+
+    else:
+        # We couldn't get an eye rating, so we'll skip difference
+        difference = None
+
+    BERATEMENT_MESSAGES = [
+        "I suppose you don't have such bad taste after all.",
+        "I regret every decision that I've ever made that has " +
+            "brought me to listen to your opinion.",
+        "Words fail me, as your taste in movies has clearly " +
+            "failed you.",
+        "That movie is great. For a clown to watch. Idiot.",
+        "Words cannot express the awfulness of your taste."
+    ]
+
+    if difference is not None:
+        beratement = BERATEMENT_MESSAGES[int(difference)]
+
+    else:
+        beratement = None
+
     return render_template("movie-profile.html", title=movie[0].title, movie_id=movie[0].movie_id,
-                           year=year, imdb_url=movie[0].imdb_url, rating_user_id=rating_user_id)
+                           year=year, imdb_url=movie[0].imdb_url, rating_user_id=rating_user_id, predrating=predrating,
+                           beratement=beratement)
 
 
 @app.route("/add-rating", methods=["POST"])
@@ -161,6 +208,7 @@ def add_rating():
     flash("Your rating has been added!")
 
     return redirect("/movies/%s" % movie_id)
+
 
 @app.route("/test")
 def test_pearson():
